@@ -1,4 +1,4 @@
-# 🦠 AI-Powered Disease Outbreak Early Warning System
+# AI-Powered Disease Outbreak Early Warning System
 
 A comprehensive MLOps pipeline that collects real-time health signals, processes data, and predicts potential disease outbreak hotspots before they escalate.
 
@@ -6,11 +6,11 @@ A comprehensive MLOps pipeline that collects real-time health signals, processes
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## 🎯 Problem Statement
+## Problem Statement
 
 Outbreaks of diseases like dengue, malaria, and influenza often spread silently before authorities detect them. This delays medical response, overwhelms hospitals, and risks thousands of lives. Traditional monitoring relies heavily on hospital data alone, which is often delayed.
 
-## ✨ Features
+## Features
 
 - **Real-time Monitoring**: Track disease indicators across multiple data sources
 - **Predictive Analytics**: Machine learning models to forecast outbreak risks
@@ -19,7 +19,7 @@ Outbreaks of diseases like dengue, malaria, and influenza often spread silently 
 - **Data Versioning**: Track changes in data and models over time
 - **Scalable Infrastructure**: Deploy on-premises or in the cloud
 
-## 🚀 System Architecture
+## System Architecture
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -41,7 +41,7 @@ Outbreaks of diseases like dengue, malaria, and influenza often spread silently 
                        └─────────────────┘    └─────────────────┘
 ```
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 disease-mlops-project/
@@ -68,7 +68,7 @@ disease-mlops-project/
     └── DATA_VERSIONING.md    # Data versioning strategy
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -142,7 +142,7 @@ disease-mlops-project/
    streamlit run app.py
    ```
 
-## 📊 Using the System
+## Using the System
 
 ### Making Predictions
 
@@ -170,7 +170,7 @@ response = requests.post(url, json=data)
 print(response.json())
 ```
 
-### API Endpoints
+API Endpoints
 
 - `GET /` - Health check
 - `POST /api/predict` - Get outbreak risk prediction
@@ -178,7 +178,7 @@ print(response.json())
 - `GET /api/data/weather` - Get weather data
 - `GET /api/metrics` - Prometheus metrics
 
-## 🧪 Running Tests
+### Running Tests
 
 ```bash
 # Install test dependencies
@@ -194,13 +194,13 @@ pytest tests/test_api.py -v
 pytest --cov=api --cov=ml tests/
 ```
 
-## 📈 Monitoring and Logging
+## Monitoring and Logging
 
 - **Prometheus**: http://localhost:9090
 - **Grafana**: http://localhost:3000
 - **MLflow**: http://localhost:5000
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
@@ -208,15 +208,15 @@ pytest --cov=api --cov=ml tests/
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📚 Documentation
+##  Documentation
 
 For detailed documentation, please see the [docs](docs/) directory.
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Healthcare workers and data scientists working on disease prevention
 - Open-source communities for their invaluable tools and libraries
@@ -271,13 +271,13 @@ python server.py
 Then open your browser to: **http://localhost:3000**
 
 The frontend provides a professional web interface with:
-- 🎯 Interactive dashboard with real-time metrics and risk maps
-- 🔮 AI prediction interface for outbreak risk assessment  
-- 🚨 Alert management with severity classification
-- 📊 Advanced analytics with customizable time ranges
-- 📱 Responsive design for all devices
+-  Interactive dashboard with real-time metrics and risk maps
+-  AI prediction interface for outbreak risk assessment  
+-  Alert management with severity classification
+-  Advanced analytics with customizable time ranges
+-  Responsive design for all devices
 
-## 📊 Features
+##  Features
 
 - **Real-time Data Ingestion**: Kafka streams for social media, hospital logs, and weather data
 - **Data Processing**: Apache Spark for streaming data and DBT for batch transformations
@@ -287,7 +287,7 @@ The frontend provides a professional web interface with:
 - **Alerting**: Automated notifications for outbreak risks and system issues
 - **Dashboard**: Real-time outbreak risk visualization by region
 
-## 🔧 Technologies Used
+##  Technologies Used
 
 - **Data Pipeline**: Apache Kafka, Apache Spark, DBT, Amazon Redshift
 - **ML**: MLflow, XGBoost, TensorFlow, Prophet
@@ -297,7 +297,7 @@ The frontend provides a professional web interface with:
 - **Dashboard**: Streamlit
 - **Frontend**: HTML5, CSS3, JavaScript, Chart.js, Leaflet Maps
 
-## 📈 Impact
+##  Impact
 
 This system enables:
 - Early detection of disease outbreaks
@@ -306,7 +306,7 @@ This system enables:
 - Prevention of healthcare system overload
 - Data-driven public health decisions
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -314,6 +314,6 @@ This system enables:
 4. Add tests
 5. Submit a pull request
 
-## 📄 License
+##  License
 
 MIT License - see LICENSE file for details
