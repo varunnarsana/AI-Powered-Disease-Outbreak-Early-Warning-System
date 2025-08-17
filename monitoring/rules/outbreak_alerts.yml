@@ -1,0 +1,150 @@
+groups:
+  - name: outbreak_alerts
+    rules:
+      # High outbreak risk alert
+      - alert: HighOutbreakRisk
+        expr: outbreak_risk_score > 7
+        for: 5m
+        labels:
+          severity: warning
+          category: outbreak
+        annotations:
+          summary: "High outbreak risk detected in {{ $labels.city }}"
+          description: "Outbreak risk score is {{ $value }} in {{ $labels.city }}, {{ $labels.region }}"
+          recommendation: "Consider deploying additional medical resources and monitoring closely"
+
+      # Critical outbreak risk alert
+      - alert: CriticalOutbreakRisk
+        expr: outbreak_risk_score > 8.5
+        for: 2m
+        labels:
+          severity: critical
+          category: outbreak
+        annotations:
+          summary: "CRITICAL outbreak risk in {{ $labels.city }}"
+          description: "Critical outbreak risk score {{ $value }} in {{ $labels.city }}, {{ $labels.region }}"
+          recommendation: "Immediate action required - deploy emergency response teams"
+
+      # High social media activity alert
+      - alert: HighSocialMediaActivity
+        expr: post_count > 50
+        for: 10m
+        labels:
+          severity: warning
+          category: social_media
+        annotations:
+          summary: "High social media activity detected in {{ $labels.city }}"
+          description: "{{ $value }} social media posts in {{ $labels.city }} in the last time window"
+          recommendation: "Monitor for potential outbreak indicators in social media"
+
+      # High hospital admission rate
+      - alert: HighHospitalAdmissions
+        expr: admission_count > 15
+        for: 15m
+        labels:
+          severity: warning
+          category: hospital
+        annotations:
+          summary: "High hospital admission rate in {{ $labels.city }}"
+          description: "{{ $value }} hospital admissions in {{ $labels.city }} in the last time window"
+          recommendation: "Check hospital capacity and prepare for increased patient load"
+
+      # Weather conditions favorable for disease spread
+      - alert: FavorableWeatherConditions
+        expr: avg_temperature > 30 and avg_humidity > 80
+        for: 30m
+        labels:
+          severity: info
+          category: weather
+        annotations:
+          summary: "Weather conditions favorable for disease spread in {{ $labels.city }}"
+          description: "Temperature: {{ $labels.avg_temperature }}°C, Humidity: {{ $labels.avg_humidity }}%"
+          recommendation: "Implement mosquito control measures and monitor disease indicators"
+
+  - name: system_health
+    rules:
+      # API high latency
+      - alert: APIHighLatency
+        expr: api_request_duration_seconds > 2
+        for: 5m
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "API high latency detected"
+          description: "API request duration is {{ $value }}s"
+          recommendation: "Check system performance and resource usage"
+
+      # API errors
+      - alert: APIHighErrorRate
+        expr: rate(api_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: critical
+          category: errors
+        annotations:
+          summary: "High API error rate detected"
+          description: "Error rate is {{ $value }} errors per second"
+          recommendation: "Investigate API errors immediately"
+
+      # Model accuracy degradation
+      - alert: ModelAccuracyDegradation
+        expr: prediction_accuracy < 0.7
+        for: 10m
+        labels:
+          severity: warning
+          category: ml_model
+        annotations:
+          summary: "Model accuracy below threshold"
+          description: "Prediction accuracy is {{ $value }}"
+          recommendation: "Consider retraining the model"
+
+      # High active alerts
+      - alert: TooManyActiveAlerts
+        expr: active_alerts_total > 10
+        for: 5m
+        labels:
+          severity: warning
+          category: alerts
+        annotations:
+          summary: "Too many active alerts"
+          description: "{{ $value }} active alerts"
+          recommendation: "Review and prioritize alerts"
+
+  - name: infrastructure
+    rules:
+      # Kafka lag
+      - alert: KafkaHighLag
+        expr: kafka_consumer_lag > 1000
+        for: 5m
+        labels:
+          severity: warning
+          category: kafka
+        annotations:
+          summary: "High Kafka consumer lag"
+          description: "Consumer lag is {{ $value }} messages"
+          recommendation: "Check consumer performance and processing speed"
+
+      # Redis memory usage
+      - alert: RedisHighMemoryUsage
+        expr: redis_memory_usage_bytes / redis_memory_max_bytes > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          category: redis
+        annotations:
+          summary: "Redis high memory usage"
+          description: "Memory usage is {{ $value | humanizePercentage }}"
+          recommendation: "Consider increasing Redis memory or cleaning up keys"
+
+      # PostgreSQL connections
+      - alert: PostgreSQLHighConnections
+        expr: pg_stat_activity_count > 80
+        for: 5m
+        labels:
+          severity: warning
+          category: postgresql
+        annotations:
+          summary: "High PostgreSQL connections"
+          description: "{{ $value }} active connections"
+          recommendation: "Check for connection leaks or high load"

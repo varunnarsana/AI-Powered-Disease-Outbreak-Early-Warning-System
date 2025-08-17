@@ -1,0 +1,12 @@
+apiVersion: 1
+
+providers:
+  - name: 'Disease Outbreak'
+    orgId: 1
+    folder: 'Disease Outbreak'
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards
+      foldersFromFilesStructure: true

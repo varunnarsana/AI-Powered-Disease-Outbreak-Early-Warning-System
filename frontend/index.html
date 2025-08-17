@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Outbreak Early Warning System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-shield-virus"></i>
+                <span>DiseaseWatch</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#dashboard" class="nav-link active">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#predictions" class="nav-link">Predictions</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#alerts" class="nav-link">Alerts</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#analytics" class="nav-link">Analytics</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#about" class="nav-link">About</a>
+                </li>
+            </ul>
+            <div class="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <div class="container">
+                <div class="section-header">
+                    <h1>Disease Outbreak Dashboard</h1>
+                    <p>Real-time monitoring and early warning system for disease outbreaks</p>
+                </div>
+
+                <!-- Key Metrics Cards -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3>Active Alerts</h3>
+                            <p class="metric-value" id="active-alerts-count">0</p>
+                            <span class="metric-change positive">+2 today</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3>High Risk Areas</h3>
+                            <p class="metric-value" id="high-risk-areas">0</p>
+                            <span class="metric-change negative">+1 today</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3>Avg Risk Score</h3>
+                            <p class="metric-value" id="avg-risk-score">0.0</p>
+                            <span class="metric-change neutral">Stable</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="metric-content">
+                            <h3>Last Update</h3>
+                            <p class="metric-value" id="last-update">Just now</p>
+                            <span class="metric-change positive">Live</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk Map and Charts -->
+                <div class="dashboard-grid">
+                    <div class="dashboard-card full-width">
+                        <div class="card-header">
+                            <h3><i class="fas fa-map"></i> Outbreak Risk Map</h3>
+                            <div class="card-actions">
+                                <button class="btn btn-secondary" onclick="refreshMap()">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div id="risk-map" class="map-container"></div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-area"></i> Risk Trends</h3>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="risk-trends-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-pie"></i> Disease Distribution</h3>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="disease-distribution-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Alerts -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bell"></i> Recent Alerts</h3>
+                        <div class="card-actions">
+                            <a href="#alerts" class="btn btn-primary">View All</a>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div id="recent-alerts" class="alerts-list">
+                            <!-- Alerts will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Predictions Section -->
+        <section id="predictions" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Outbreak Risk Prediction</h2>
+                    <p>Analyze and predict disease outbreak risks using our AI models</p>
+                </div>
+
+                <div class="predictions-grid">
+                    <div class="prediction-form-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-calculator"></i> Risk Assessment Form</h3>
+                        </div>
+                        <div class="card-content">
+                            <form id="prediction-form" class="prediction-form">
+                                <div class="form-group">
+                                    <label for="city">City</label>
+                                    <input type="text" id="city" name="city" required placeholder="Enter city name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="region">Region</label>
+                                    <input type="text" id="region" name="region" required placeholder="Enter region">
+                                </div>
+                                <div class="form-group">
+                                    <label for="temperature">Temperature (°C)</label>
+                                    <input type="number" id="temperature" name="temperature" step="0.1" required placeholder="25.0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="humidity">Humidity (%)</label>
+                                    <input type="number" id="humidity" name="humidity" min="0" max="100" required placeholder="70">
+                                </div>
+                                <div class="form-group">
+                                    <label for="rainfall">Rainfall (mm)</label>
+                                    <input type="number" id="rainfall" name="rainfall" step="0.1" required placeholder="0.0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="social_activity">Social Media Activity</label>
+                                    <select id="social_activity" name="social_activity" required>
+                                        <option value="">Select activity level</option>
+                                        <option value="low">Low</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hospital_admissions">Hospital Admissions</label>
+                                    <input type="number" id="hospital_admissions" name="hospital_admissions" min="0" required placeholder="0">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-full">
+                                    <i class="fas fa-search"></i> Predict Risk
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="prediction-result-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-bar"></i> Prediction Results</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="prediction-results" class="prediction-results">
+                                <div class="no-prediction">
+                                    <i class="fas fa-chart-line"></i>
+                                    <p>Submit the form to get outbreak risk predictions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Alerts Section -->
+        <section id="alerts" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Active Alerts & Notifications</h2>
+                    <p>Monitor and manage disease outbreak alerts in real-time</p>
+                </div>
+
+                <div class="alerts-controls">
+                    <div class="filters">
+                        <select id="severity-filter" class="filter-select">
+                            <option value="">All Severities</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                        <select id="region-filter" class="filter-select">
+                            <option value="">All Regions</option>
+                            <option value="north">North</option>
+                            <option value="south">South</option>
+                            <option value="east">East</option>
+                            <option value="west">West</option>
+                        </select>
+                        <button class="btn btn-secondary" onclick="refreshAlerts()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="alerts-grid" id="alerts-grid">
+                    <!-- Alerts will be populated here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section id="analytics" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Advanced Analytics</h2>
+                    <p>Deep dive into disease patterns, trends, and predictive insights</p>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="dashboard-card full-width">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line"></i> Historical Outbreak Analysis</h3>
+                            <div class="card-actions">
+                                <select id="time-range" class="time-select">
+                                    <option value="7">Last 7 days</option>
+                                    <option value="30" selected>Last 30 days</option>
+                                    <option value="90">Last 90 days</option>
+                                    <option value="365">Last year</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="historical-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-thermometer-half"></i> Weather Correlation</h3>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="weather-correlation-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-users"></i> Social Media Sentiment</h3>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="sentiment-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>About the System</h2>
+                    <p>Learn about our AI-powered disease outbreak early warning system</p>
+                </div>
+
+                <div class="about-content">
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>AI-Powered Detection</h3>
+                        <p>Our system uses advanced machine learning models including XGBoost, LSTM, and Prophet to analyze multiple data sources and predict potential outbreak hotspots before they escalate.</p>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <i class="fas fa-stream"></i>
+                        </div>
+                        <h3>Real-Time Processing</h3>
+                        <p>Built on Apache Kafka and Spark Streaming for real-time data ingestion and processing, ensuring immediate response to emerging health threats.</p>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Early Warning</h3>
+                        <p>Detect disease outbreaks up to 2-3 weeks earlier than traditional methods, enabling proactive response and resource allocation.</p>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="about-icon">
+                            <i class="fas fa-chart-network"></i>
+                        </div>
+                        <h3>Comprehensive Monitoring</h3>
+                        <p>Monitor multiple data sources including social media, hospital records, weather data, and public health reports for comprehensive outbreak detection.</p>
+                    </div>
+                </div>
+
+                <div class="tech-stack">
+                    <h3>Technology Stack</h3>
+                    <div class="tech-grid">
+                        <div class="tech-item">
+                            <i class="fab fa-python"></i>
+                            <span>Python</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-database"></i>
+                            <span>Apache Kafka</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-fire"></i>
+                            <span>Apache Spark</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-robot"></i>
+                            <span>MLflow</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-server"></i>
+                            <span>FastAPI</span>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Prometheus</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>DiseaseWatch</h4>
+                    <p>AI-powered disease outbreak early warning system</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#predictions">Predictions</a></li>
+                        <li><a href="#alerts">Alerts</a></li>
+                        <li><a href="#analytics">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Email: info@diseasewatch.com</p>
+                    <p>Phone: +1 (555) 123-4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 DiseaseWatch. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

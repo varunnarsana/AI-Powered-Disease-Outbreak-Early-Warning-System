@@ -1,0 +1,176 @@
+groups:
+  - name: system_health_monitoring
+    rules:
+      # System uptime
+      - alert: SystemDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: availability
+        annotations:
+          summary: "System {{ $labels.job }} is down"
+          description: "{{ $labels.job }} has been down for more than 1 minute"
+          recommendation: "Check system status and restart if necessary"
+
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value }}%"
+          recommendation: "Check for resource-intensive processes"
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value }}%"
+          recommendation: "Check memory usage and consider increasing RAM"
+
+      # High disk usage
+      - alert: HighDiskUsage
+        expr: (node_filesystem_size_bytes - node_filesystem_free_bytes) / node_filesystem_size_bytes * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          category: storage
+        annotations:
+          summary: "High disk usage on {{ $labels.instance }}"
+          description: "Disk usage is {{ $value }}%"
+          recommendation: "Clean up disk space or increase storage"
+
+      # Network high traffic
+      - alert: HighNetworkTraffic
+        expr: rate(node_network_receive_bytes_total[5m]) > 1000000000
+        for: 5m
+        labels:
+          severity: info
+          category: network
+        annotations:
+          summary: "High network traffic on {{ $labels.instance }}"
+          description: "Network receive rate is {{ $value | humanize }}B/s"
+          recommendation: "Monitor network performance"
+
+  - name: application_health
+    rules:
+      # Application response time
+      - alert: AppHighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "High application response time"
+          description: "95th percentile response time is {{ $value }}s"
+          recommendation: "Check application performance and optimize"
+
+      # Application error rate
+      - alert: AppHighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          category: errors
+        annotations:
+          summary: "High application error rate"
+          description: "Error rate is {{ $value | humanizePercentage }}"
+          recommendation: "Investigate application errors immediately"
+
+      # Database connection pool exhaustion
+      - alert: DatabaseConnectionPoolExhausted
+        expr: pg_stat_database_numbackends / pg_settings_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          category: database
+        annotations:
+          summary: "Database connection pool nearly exhausted"
+          description: "Connection pool usage is {{ $value | humanizePercentage }}"
+          recommendation: "Check for connection leaks or increase max connections"
+
+  - name: ml_pipeline_health
+    rules:
+      # Model prediction latency
+      - alert: ModelHighPredictionLatency
+        expr: prediction_latency_seconds > 5
+        for: 5m
+        labels:
+          severity: warning
+          category: ml_pipeline
+        annotations:
+          summary: "High model prediction latency"
+          description: "Prediction latency is {{ $value }}s"
+          recommendation: "Check model performance and optimize inference"
+
+      # Model drift detection
+      - alert: ModelDriftDetected
+        expr: model_drift_score > 0.3
+        for: 10m
+        labels:
+          severity: warning
+          category: ml_pipeline
+        annotations:
+          summary: "Model drift detected"
+          description: "Drift score is {{ $value }}"
+          recommendation: "Consider retraining the model with new data"
+
+      # Feature store health
+      - alert: FeatureStoreUnhealthy
+        expr: feature_store_health_check == 0
+        for: 2m
+        labels:
+          severity: critical
+          category: ml_pipeline
+        annotations:
+          summary: "Feature store is unhealthy"
+          description: "Feature store health check failed"
+          recommendation: "Check feature store connectivity and data quality"
+
+  - name: data_pipeline_health
+    rules:
+      # Kafka consumer lag
+      - alert: KafkaConsumerLag
+        expr: kafka_consumer_lag_seconds > 300
+        for: 5m
+        labels:
+          severity: warning
+          category: data_pipeline
+        annotations:
+          summary: "High Kafka consumer lag"
+          description: "Consumer lag is {{ $value }}s"
+          recommendation: "Check consumer performance and processing speed"
+
+      # Data processing pipeline failure
+      - alert: DataPipelineFailure
+        expr: data_pipeline_success_rate < 0.95
+        for: 5m
+        labels:
+          severity: critical
+          category: data_pipeline
+        annotations:
+          summary: "Data pipeline failure rate high"
+          description: "Success rate is {{ $value | humanizePercentage }}"
+          recommendation: "Investigate pipeline failures and data quality issues"
+
+      # Data freshness
+      - alert: DataStale
+        expr: time() - data_last_updated_timestamp > 3600
+        for: 10m
+        labels:
+          severity: warning
+          category: data_pipeline
+        annotations:
+          summary: "Data is stale"
+          description: "Data hasn't been updated for {{ $value }}s"
+          recommendation: "Check data ingestion pipeline and sources"

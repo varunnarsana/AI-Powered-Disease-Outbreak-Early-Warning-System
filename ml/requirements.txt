@@ -1,0 +1,32 @@
+# Core dependencies
+numpy>=1.19.0
+pandas>=1.2.0
+scikit-learn>=1.0.0
+mlflow>=1.25.0
+pyyaml>=6.0
+python-dotenv>=0.19.0
+
+# Data processing
+pyarrow>=6.0.0  # For parquet support
+
+# Model serving
+fastapi>=0.68.0
+uvicorn>=0.15.0
+pydantic>=1.8.0
+
+# Testing
+pytest>=6.2.5
+pytest-cov>=2.12.1
+
+# Monitoring
+prometheus-client>=0.13.1
+
+# Data validation
+great-expectations>=0.14.0
+
+# Logging
+structlog>=21.1.0
+
+# Utilities
+tqdm>=4.62.0
+python-dateutil>=2.8.2
